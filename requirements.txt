@@ -1,0 +1,7 @@
+yt-dlp 
+pydub 
+fastapi 
+apscheduler 
+requests 
+uvicorn 
+pytest
