@@ -1,0 +1,183 @@
+system:
+  timezone: "America/Santiago"
+
+programs:
+
+  - id: radio_japon
+    name: "Radio Japón"
+    source: stream
+    url: "STREAM_URL_RADIO_JAPON"
+    schedule:
+      time: "08:00"
+      days: ["sun"]
+    processing:
+      enabled: true
+      profile: "radio_clean"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: radio_clasica_manana
+    name: "Radio Clásica Mañana"
+    source: stream
+    url: "STREAM_URL_RADIO_CLASICA"
+    schedule:
+      time: "07:00"
+      days: ["mon", "tue", "wed", "thu", "fri"]
+    processing:
+      enabled: true
+      profile: "radio_clean"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: amor_que_vale
+    name: "Amor que Vale"
+    source: rss
+    url: "RSS_URL_AMOR_QUE_VALE"
+    schedule:
+      time: "10:00"
+      days: ["mon", "wed", "fri"]
+    processing:
+      enabled: true
+      profile: "podcast_intro"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: golpe_de_bit
+    name: "Golpe de Bit"
+    source: rss
+    url: "RSS_URL_GOLPE_DE_BIT"
+    schedule:
+      time: "11:30"
+      days: ["tue", "thu"]
+    processing:
+      enabled: true
+      profile: "podcast_intro"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: noticias_telemundo_tarde
+    name: "Noticias Telemundo Tarde"
+    source: youtube
+    url: "YOUTUBE_URL_TELEMUNDO"
+    schedule:
+      time: "15:00"
+      days: ["mon", "tue", "wed", "thu", "fri"]
+    processing:
+      enabled: true
+      profile: "news"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: grandes_ciclos
+    name: "Grandes Ciclos"
+    source: stream
+    url: "STREAM_URL_RADIO_CLASICA"
+    schedule:
+      time: "15:00"
+      days: ["sat"]
+    processing:
+      enabled: true
+      profile: "radio_clean"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: tu_historia_preferida
+    name: "Tu Historia Preferida"
+    source: local
+    url: "LOCAL_STORAGE"
+    schedule:
+      time: "16:30"
+      days: ["mon", "wed", "fri"]
+    processing:
+      enabled: false
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: documentales_dw
+    name: "Documentales DW"
+    source: youtube
+    url: "YOUTUBE_URL_DW"
+    schedule:
+      time: "19:00"
+      days: ["mon", "wed"]
+    processing:
+      enabled: true
+      profile: "documentary"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: radio_clasica_noche
+    name: "Radio Clásica Noche"
+    source: stream
+    url: "STREAM_URL_RADIO_CLASICA"
+    schedule:
+      time: "20:00"
+      days: ["daily"]
+    processing:
+      enabled: false
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: noticias_telemundo_noche
+    name: "Noticias Telemundo Noche"
+    source: youtube
+    url: "YOUTUBE_URL_TELEMUNDO"
+    schedule:
+      time: "21:15"
+      days: ["mon", "tue", "wed", "thu", "fri"]
+    processing:
+      enabled: true
+      profile: "news"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: a_traves_de_la_biblia
+    name: "A Través de la Biblia"
+    source: rss
+    url: "RSS_URL_BIBLIA"
+    schedule:
+      time: "22:00"
+      days: ["mon", "tue", "wed", "thu", "fri"]
+    processing:
+      enabled: true
+      profile: "podcast_intro"
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: radio_clasica_madrugada
+    name: "Radio Clásica Madrugada"
+    source: stream
+    url: "STREAM_URL_RADIO_CLASICA"
+    schedule:
+      time: "23:00"
+      days: ["daily"]
+    processing:
+      enabled: false
+    delivery:
+      enabled: true
+      target: "antofagasta"
+
+  - id: conferencias_fundacion_march
+    name: "Conferencias Fundación March"
+    source: rss
+    url: "RSS_URL_MARCH"
+    schedule:
+      time: "04:00"
+      days: ["mon", "wed", "fri"]
+    processing:
+      enabled: true
+      profile: "lecture"
+    delivery:
+      enabled: true
+      target: "antofagasta"
