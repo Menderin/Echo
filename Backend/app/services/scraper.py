@@ -6,20 +6,26 @@ from .scrapers.base import ScraperError
 
 RAW_DIR = os.path.abspath("data/raw")
 
-def ensure_raw_dir():
-    if not os.path.exists(RAW_DIR):
-        os.makedirs(RAW_DIR, exist_ok=True)
+def get_todays_dir() -> str:
+    """
+    Genera y crea la ruta del directorio para hoy: data/raw/YYYY/MM/DD
+    """
+    now = datetime.now()
+    # Construimos la ruta: data/raw/2023/10/27
+    todays_path = os.path.join(RAW_DIR, now.strftime("%Y"), now.strftime("%m"), now.strftime("%d"))
+    
+    if not os.path.exists(todays_path):
+        os.makedirs(todays_path, exist_ok=True)
+        
+    return todays_path
 
 def generate_filename(program_id: str) -> str:
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
-    return f"{program_id}_{timestamp}.mp3"
+    return f"{program_id}.mp3"
 
 def scrape(program: Dict) -> Dict:
     """
-    Descarga el audio de un programa y lo guarda en /data/raw
+    Descarga el audio de un programa y lo guarda en /data/raw/YYYY/MM/DD
     """
-    ensure_raw_dir()
-
     program_id = program["id"]
     source = program["source"]
     url = program["url"]
@@ -37,12 +43,12 @@ def scrape(program: Dict) -> Dict:
         # 1. Obtener el scraper adecuado usando la Factory
         scraper = ScraperFactory.get_scraper(source)
         
-        # 2. Preparar rutas
+        # 2. Preparar rutas (Ahora con carpetas por fecha)
+        output_dir = get_todays_dir()
         filename = generate_filename(program_id)
-        output_path = os.path.join(RAW_DIR, filename)
+        output_path = os.path.join(output_dir, filename)
 
         # 3. Ejecutar descarga
-        # Podemos pasar parámetros extra si vienen en el dict 'program'
         scraper.download(url, output_path)
 
         return {
@@ -53,7 +59,6 @@ def scrape(program: Dict) -> Dict:
         }
 
     except ScraperError as e:
-        # Re-lanzamos para que lo maneje el main.py
         raise e
     except Exception as e:
         raise ScraperError(f"Error inesperado en scrape: {str(e)}")

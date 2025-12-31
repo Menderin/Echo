@@ -1,0 +1,140 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.download-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  background: #2a2a2a;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  gap: 0.5rem;
+}
+
+label {
+  font-weight: bold;
+  color: #ddd;
+}
+
+input,
+select {
+  padding: 0.8rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #333;
+  color: white;
+  font-size: 1rem;
+}
+
+button {
+  padding: 1rem;
+  border-radius: 8px;
+  border: none;
+  background-color: #646cff;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background-color: #535bf2;
+}
+
+button:disabled {
+  background-color: #444;
+  cursor: not-allowed;
+}
+
+.status-message {
+  padding: 1rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.success {
+  background-color: #1b5e20;
+  color: #e8f5e9;
+}
+
+th,
+td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #444;
+}
+
+th {
+  background-color: #333;
+  font-weight: bold;
+}
+
+tr:hover {
+  background-color: #383838;
+}
+
+.delete-btn {
+  background-color: #c62828;
+  padding: 0.5rem;
+  font-size: 1.2rem;
+}
+
+.delete-btn:hover {
+  background-color: #b71c1c;
+}
+
+.list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.sync-btn {
+  background-color: #2e7d32;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+.sync-btn:hover {
+  background-color: #1b5e20;
+}
+
+.cleanup-btn {
+  background-color: #f57c00;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+.cleanup-btn:hover {
+  background-color: #e65100;
+}
