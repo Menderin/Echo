@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: ./Backend
+      dockerfile: DockerFile
+    container_name: echo_backend
+    volumes:
+      # Mapeamos el código local al contenedor para desarrollo en vivo
+      - ./Backend:/app
+      # Mapeamos la carpeta de datos para que las descargas persistan en tu PC
+      - ./data:/app/data
+    # Ejecutamos uvicorn como servidor web
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
