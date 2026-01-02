@@ -76,7 +76,7 @@ async def run_scraper(program: Program, db: Session = Depends(database.get_db)):
                     db=db,
                     title=program.id,
                     url=program.url,
-                    source=program.source,
+                    source=program.source,  # youtube, stream, etc.
                     file_path=result["file_path"]
                 )
                 print(f"💾 Guardado en DB: ID {new_episode.id}")
@@ -137,25 +137,42 @@ async def sync_files(db: Session = Depends(database.get_db)):
         for file in files:
             if file.endswith(".mp3"):
                 full_path = os.path.join(root_dir, file)
-                # Normalizar path para consistencia (barras inclinadas)
+                # Normalizar path para consistencia (barras inclinadas y relativo)
                 full_path = full_path.replace("\\", "/")
                 
+                # Asegurar que la ruta sea relativa (sin /app/ al inicio)
+                if full_path.startswith("/app/"):
+                    full_path = full_path[5:]  # Remover "/app/"
+                
                 # Verificar si ya existe en BD
-                if not crud.get_episode_by_file_path(db, full_path):
+                existing = crud.get_episode_by_file_path(db, full_path)
+                if not existing:
                     try:
                         # Crear registro
                         # Usamos el nombre del archivo (sin extensión) como ID/Título
                         file_id = os.path.splitext(file)[0]
                         
+                        # Intentar determinar el source original
+                        # Buscar si existe otro registro con el mismo título (podría ser descarga previa)
+                        potential_source = "local"
+                        
+                        # Buscar en la BD por título similar
+                        all_episodes = crud.get_episodes(db, skip=0, limit=1000)
+                        for ep in all_episodes:
+                            if ep.title and ep.title.strip() == file_id.strip():
+                                # Si encontramos un match por título, usar su source
+                                potential_source = ep.source
+                                break
+                        
                         crud.create_episode(
                             db=db,
                             title=file_id,
-                            url=f"local://{file_id}", # URL ficticia para locales
-                            source="local_scan",
+                            url=f"local://{file_id}",  # URL ficticia para locales
+                            source=potential_source,  # Detectado o "local"
                             file_path=full_path
                         )
                         added_count += 1
-                        print(f"➕ Archivo importado: {file}")
+                        print(f"➕ Archivo importado: {file} (source: {potential_source})")
                     except Exception as e:
                         print(f"❌ Error importando {file}: {e}")
                         errors.append(f"{file}: {str(e)}")
@@ -170,14 +187,26 @@ async def sync_files(db: Session = Depends(database.get_db)):
 @app.post("/cleanup")
 async def cleanup_orphaned_records(db: Session = Depends(database.get_db)):
     """
-    Elimina de la BD los registros de episodios cuyos archivos físicos no existen.
-    Útil para limpiar la base de datos después de borrar archivos manualmente.
+    1. Normaliza todas las rutas de archivo (remueve /app/ si existe)
+    2. Elimina de la BD los registros de episodios cuyos archivos físicos no existen
+    3. Elimina duplicados basados en file_path
     """
     all_episodes = crud.get_episodes(db, skip=0, limit=10000)
     deleted_count = 0
+    normalized_count = 0
+    duplicates_removed = 0
     errors = []
-
+    
+    # 1. Normalizar rutas y eliminar huérfanos
     for episode in all_episodes:
+        # Normalizar path si tiene /app/
+        if episode.file_path and episode.file_path.startswith("/app/"):
+            new_path = episode.file_path[5:]  # Remover "/app/"
+            episode.file_path = new_path
+            db.commit()
+            normalized_count += 1
+            print(f"🔄 Ruta normalizada: {new_path}")
+        
         # Verificar si el archivo existe
         if episode.file_path and not os.path.exists(episode.file_path):
             try:
@@ -187,10 +216,29 @@ async def cleanup_orphaned_records(db: Session = Depends(database.get_db)):
             except Exception as e:
                 print(f"❌ Error eliminando registro {episode.id}: {e}")
                 errors.append(f"{episode.title}: {str(e)}")
+    
+    # 2. Eliminar duplicados (mismo file_path)
+    # Recargar episodios después de normalización
+    all_episodes = crud.get_episodes(db, skip=0, limit=10000)
+    seen_paths = {}
+    for episode in all_episodes:
+        if episode.file_path in seen_paths:
+            # Es un duplicado, eliminar este
+            try:
+                crud.delete_episode(db, episode.id)
+                duplicates_removed += 1
+                print(f"🗑️ Duplicado eliminado: {episode.title} (ID: {episode.id})")
+            except Exception as e:
+                print(f"❌ Error eliminando duplicado {episode.id}: {e}")
+                errors.append(f"{episode.title}: {str(e)}")
+        else:
+            seen_paths[episode.file_path] = episode.id
 
     return {
         "status": "success",
-        "message": f"Limpieza completada. {deleted_count} registros huérfanos eliminados.",
+        "message": f"Limpieza completada. {normalized_count} rutas normalizadas, {deleted_count} registros huérfanos eliminados, {duplicates_removed} duplicados eliminados.",
+        "normalized": normalized_count,
         "deleted": deleted_count,
+        "duplicates_removed": duplicates_removed,
         "errors": errors
     }

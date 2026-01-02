@@ -1,26 +1,26 @@
 import { useState, useEffect } from 'react'
-import { 
-  MdRadio, 
-  MdBarChart, 
-  MdToday, 
-  MdPlayArrow,
-  MdDownload,
-  MdRefresh,
-  MdDelete,
-  MdCloudUpload,
-  MdHistory
+import {
+    MdRadio,
+    MdBarChart,
+    MdToday,
+    MdPlayArrow,
+    MdDownload,
+    MdRefresh,
+    MdDelete,
+    MdCloudUpload,
+    MdHistory
 } from 'react-icons/md'
-import { 
-  FiRefreshCw,
-  FiTrash2,
-  FiAlertCircle,
-  FiCheckCircle
+import {
+    FiRefreshCw,
+    FiTrash2,
+    FiAlertCircle,
+    FiCheckCircle
 } from 'react-icons/fi'
-import { 
-  BsYoutube, 
-  BsBroadcast,
-  BsCalendar,
-  BsCollection
+import {
+    BsYoutube,
+    BsBroadcast,
+    BsCalendar,
+    BsCollection
 } from 'react-icons/bs'
 import './App.css'
 
@@ -40,14 +40,42 @@ function App() {
     }, [])
 
     const fetchEpisodes = async () => {
+        setLoading(true)
         try {
+            // 1. Primero sincronizar archivos del disco con la base de datos
+            console.log("Sincronizando archivos del disco...")
+            const syncResponse = await fetch('http://localhost:8000/sync', {
+                method: 'POST'
+            })
+
+            if (syncResponse.ok) {
+                const syncData = await syncResponse.json()
+                console.log(`Sincronización completada: ${syncData.added} archivos nuevos`)
+
+                // Si hubo errores, mostrarlos en consola
+                if (syncData.errors && syncData.errors.length > 0) {
+                    console.warn("Errores durante sincronización:", syncData.errors)
+                }
+            } else {
+                console.error("Error al sincronizar archivos")
+            }
+
+            // 2. Luego obtener la lista actualizada de episodios
+            console.log("Obteniendo lista de episodios...")
             const response = await fetch('http://localhost:8000/episodes')
             if (response.ok) {
                 const data = await response.json()
                 setEpisodes(data)
+                console.log(`${data.length} episodios cargados`)
             }
         } catch (error) {
             console.error("Error fetching episodes:", error)
+            setStatus({
+                type: 'error',
+                message: `Error al actualizar: ${error.message}`
+            })
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -115,20 +143,24 @@ function App() {
         }).length,
         youtube: episodes.filter(ep => {
             const source = ep.source?.toLowerCase();
-            const station = ep.station_name?.toLowerCase();
-            return source === 'youtube' || 
-                station === 'youtube' || 
-                station?.includes('youtube') ||
-                ep.title?.toLowerCase().includes('youtube');
+            return source === 'youtube';
         }).length,
         stream: episodes.filter(ep => {
             const source = ep.source?.toLowerCase();
-            const station = ep.station_name?.toLowerCase();
-            return source === 'stream' || 
-                station === 'stream' || 
-                station?.includes('stream');
+            return source === 'stream';
         }).length
     }
+
+    // Helper para formatear el source de forma user-friendly
+    const formatSource = (source) => {
+        const sourceMap = {
+            'youtube': 'YouTube',
+            'stream': 'Transmisión en Vivo',
+            'local': 'Archivo Local',
+            'local_scan': 'Archivo Local'
+        };
+        return sourceMap[source] || source || 'Desconocido';
+    };
 
     return (
         <div className="dashboard">
@@ -290,8 +322,8 @@ function App() {
                             className="action-btn"
                             disabled={loading}
                         >
-                            <FiRefreshCw className="btn-icon" />
-                            Actualizar
+                            <FiRefreshCw className={`btn-icon ${loading ? 'spinning' : ''}`} />
+                            {loading ? 'Sincronizando...' : 'Actualizar'}
                         </button>
                     </div>
                 </div>
@@ -316,7 +348,7 @@ function App() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {episodes.slice(0, 5).map((ep) => (
+                                {episodes.map((ep) => (
                                     <tr key={ep.id}>
                                         <td>
                                             <span className="program-title">
@@ -325,7 +357,7 @@ function App() {
                                         </td>
                                         <td>
                                             <span className="source-badge">
-                                                {ep.station_name || ep.source}
+                                                {formatSource(ep.source)}
                                             </span>
                                         </td>
                                         <td>
@@ -354,17 +386,6 @@ function App() {
                                 ))}
                             </tbody>
                         </table>
-
-                        {episodes.length > 5 && (
-                            <div className="table-footer">
-                                <span>
-                                    Mostrando 5 de {episodes.length} programas
-                                </span>
-                                <button className="text-btn">
-                                    Ver todos →
-                                </button>
-                            </div>
-                        )}
                     </div>
                 )}
             </div>

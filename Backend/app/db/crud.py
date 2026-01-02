@@ -23,7 +23,7 @@ def create_episode(db: Session, title: str, url: str, source: str, file_path: st
     db_episode = models.Episode(
         title=title,
         url=url,
-        station_name=source, # Usamos 'source' como nombre de emisora por ahora
+        source=source,  # youtube, stream, local, etc.
         file_path=file_path
     )
     db.add(db_episode)

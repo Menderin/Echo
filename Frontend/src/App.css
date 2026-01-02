@@ -40,7 +40,8 @@ body {
 
 .main-content {
     flex: 1;
-    margin-left: 250px; /* Ancho del sidebar */
+    margin-left: 250px;
+    /* Ancho del sidebar */
     padding: 2rem;
     background: var(--bg-main);
     min-height: 100vh;
@@ -90,11 +91,9 @@ body {
     align-items: center;
     margin-bottom: 2.5rem;
     padding: 1.5rem 2rem;
-    background: linear-gradient(
-        135deg,
-        rgba(30, 41, 59, 0.9),
-        rgba(15, 23, 42, 0.9)
-    );
+    background: linear-gradient(135deg,
+            rgba(30, 41, 59, 0.9),
+            rgba(15, 23, 42, 0.9));
     border-radius: 20px;
     border: 1px solid var(--border);
 }
@@ -109,6 +108,7 @@ body {
     font-size: 2.3rem;
     font-weight: 800;
     background: linear-gradient(135deg, var(--primary), var(--accent));
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -316,142 +316,190 @@ body {
 
 /* Iconos en títulos */
 .dashboard-title-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .dashboard-title-icon {
-  color: #60a5fa;
-  font-size: 2rem;
+    color: #60a5fa;
+    font-size: 2rem;
 }
 
 .section-title-container {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
 }
 
 .section-title-icon {
-  color: #60a5fa;
-  font-size: 1.5rem;
+    color: #60a5fa;
+    font-size: 1.5rem;
 }
 
 /* Iconos en botones */
 .btn-icon {
-  margin-right: 0.5rem;
-  vertical-align: middle;
+    margin-right: 0.5rem;
+    vertical-align: middle;
 }
 
 .btn-icon.spinning {
-  animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Iconos en alertas */
 .alert-icon {
-  margin-right: 0.75rem;
-  font-size: 1.2rem;
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
 }
 
 .status-alert.success .alert-icon {
-  color: #22c55e;
+    color: #22c55e;
 }
 
 .status-alert.error .alert-icon {
-  color: #ef4444;
+    color: #ef4444;
 }
 
 /* Iconos en estado del header */
 .status-dot.active {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 16px;
-  height: 16px;
-  background: rgba(34, 197, 94, 0.2);
-  border-radius: 50%;
-  color: #22c55e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: rgba(34, 197, 94, 0.2);
+    border-radius: 50%;
+    color: #22c55e;
 }
 
 /* Mejoras para iconos en botones pequeños */
 .primary-btn.small .btn-icon {
-  margin-right: 0.4rem;
-  font-size: 0.9rem;
+    margin-right: 0.4rem;
+    font-size: 0.9rem;
 }
 
 .action-btn .btn-icon {
-  margin-right: 0.4rem;
+    margin-right: 0.4rem;
 }
 
 /* Icono de estado vacío */
 .empty-icon {
-  color: #64748b;
-  opacity: 0.5;
-  margin-bottom: 1rem;
+    color: #64748b;
+    opacity: 0.5;
+    margin-bottom: 1rem;
 }
 
 /* Mejora para iconos en la tabla */
 .icon-btn.delete {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #94a3b8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
 }
 
 .icon-btn.delete:hover {
-  color: #ef4444;
+    color: #ef4444;
 }
 
 /* Ajuste para iconos en stat-cards */
 .stat-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(96, 165, 250, 0.15);
-  color: #60a5fa;
-  margin-right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: rgba(96, 165, 250, 0.15);
+    color: #60a5fa;
+    margin-right: 1rem;
 }
 
 /* Responsive para iconos */
 @media (max-width: 768px) {
-  .btn-icon {
-    margin-right: 0.3rem;
-  }
-  
-  .dashboard-title-icon {
-    font-size: 1.5rem;
-  }
-  
-  .section-title-icon {
-    font-size: 1.2rem;
-  }
+    .btn-icon {
+        margin-right: 0.3rem;
+    }
+
+    .dashboard-title-icon {
+        font-size: 1.5rem;
+    }
+
+    .section-title-icon {
+        font-size: 1.2rem;
+    }
 }
 
 /* =====================================================
    TABLE
 ===================================================== */
 .table-container {
-    overflow-x: auto;
     border-radius: 14px;
     border: 1px solid var(--border);
+    overflow: hidden;
 }
 
 .modern-table {
     width: 100%;
     border-collapse: collapse;
     min-width: 720px;
+    display: table;
 }
 
 .modern-table thead {
     background: var(--bg-soft);
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+.modern-table tbody {
+    display: block;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Custom scrollbar styling for tbody */
+.modern-table tbody::-webkit-scrollbar {
+    width: 10px;
+}
+
+.modern-table tbody::-webkit-scrollbar-track {
+    background: var(--bg-soft);
+    border-radius: 10px;
+}
+
+.modern-table tbody::-webkit-scrollbar-thumb {
+    background: #8b7bcc;
+    border-radius: 10px;
+    border: 2px solid var(--bg-soft);
+}
+
+.modern-table tbody::-webkit-scrollbar-thumb:hover {
+    background: #9f92d4;
+}
+
+/* Firefox */
+.modern-table tbody {
+    scrollbar-width: thin;
+    scrollbar-color: #8b7bcc var(--bg-soft);
+}
+
+.modern-table tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
 }
 
 .modern-table th {
@@ -461,6 +509,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--text-soft);
+    background: var(--bg-soft);
     border-bottom: 1px solid var(--border);
 }
 
