@@ -1,140 +1,535 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+/* =====================================================
+   RESET & BASE
+===================================================== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
+:root {
+    --bg-main: #0f172a;
+    --bg-card: #1e293b;
+    --bg-soft: #020617;
+    --border: #334155;
+
+    --text-main: #e2e8f0;
+    --text-soft: #94a3b8;
+
+    --primary: #60a5fa;
+    --primary-strong: #3b82f6;
+    --accent: #8b5cf6;
+
+    --success: #22c55e;
+    --danger: #ef4444;
+    --warning: #f59e0b;
 }
 
-.download-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  background: #2a2a2a;
-  padding: 2rem;
-  border-radius: 12px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-main);
+    color: var(--text-main);
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    flex: 1;
+    margin-left: 250px; /* Ancho del sidebar */
+    padding: 2rem;
+    background: var(--bg-main);
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+/* Dashboard dentro del main-content */
+.dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Asegurar que el dashboard no tenga márgenes que lo empujen */
+.dashboard-header {
+    width: 100%;
+}
+
+/* Si el sidebar está encima, ajustar z-index */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    width: 250px;
+    z-index: 1000;
+    background: var(--bg-card);
+    border-right: 1px solid var(--border);
+}
+
+/* =====================================================
+   DASHBOARD LAYOUT
+===================================================== */
+.dashboard {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding-bottom: 3rem;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(
+        135deg,
+        rgba(30, 41, 59, 0.9),
+        rgba(15, 23, 42, 0.9)
+    );
+    border-radius: 20px;
+    border: 1px solid var(--border);
+}
+
+.dashboard-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.dashboard-title {
+    font-size: 2.3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.dashboard-status {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-soft);
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--success);
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+/* =====================================================
+   STATS
+===================================================== */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    border: 1px solid var(--border);
+    transition: all 0.25s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.25);
+}
+
+.stat-icon {
+    font-size: 2rem;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(96, 165, 250, 0.15);
+}
+
+.stat-value {
+    font-size: 1.9rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+}
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+.dashboard-section {
+    background: var(--bg-card);
+    border-radius: 18px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid var(--border);
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.section-header h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+}
+
+.section-header p {
+    color: var(--text-soft);
+    font-size: 0.9rem;
+}
+
+/* =====================================================
+   FORM
+===================================================== */
+.modern-form {
+    background: var(--bg-soft);
+    padding: 1.5rem;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
 }
 
 .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+}
+
+.form-group input,
+.form-group select {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    padding: 0.75rem 0.9rem;
+    border-radius: 8px;
+    color: var(--text-main);
+    font-size: 0.95rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+.primary-btn {
+    background: linear-gradient(135deg, var(--primary-strong), var(--accent));
+    border: none;
+    color: white;
+    padding: 0.9rem 1.6rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.25s ease;
+}
+
+.primary-btn.small {
+    padding: 0.55rem 1.1rem;
+    font-size: 0.85rem;
+}
+
+.primary-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(59, 130, 246, 0.35);
+}
+
+.primary-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.action-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    border-color: var(--primary);
+    color: var(--text-main);
+}
+
+.icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-soft);
+    cursor: pointer;
+}
+
+.icon-btn.delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+    border-color: var(--danger);
+}
+
+/* =====================================================
+   ICONOS Y ESTILOS PARA REACT-ICONS
+===================================================== */
+
+/* Iconos en títulos */
+.dashboard-title-container {
   display: flex;
-  flex-direction: column;
-  text-align: left;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-label {
-  font-weight: bold;
-  color: #ddd;
+.dashboard-title-icon {
+  color: #60a5fa;
+  font-size: 2rem;
 }
 
-input,
-select {
-  padding: 0.8rem;
-  border-radius: 6px;
-  border: 1px solid #444;
-  background: #333;
-  color: white;
-  font-size: 1rem;
+.section-title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-button {
-  padding: 1rem;
-  border-radius: 8px;
-  border: none;
-  background-color: #646cff;
-  color: white;
-  font-size: 1rem;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s;
+.section-title-icon {
+  color: #60a5fa;
+  font-size: 1.5rem;
 }
 
-button:hover {
-  background-color: #535bf2;
+/* Iconos en botones */
+.btn-icon {
+  margin-right: 0.5rem;
+  vertical-align: middle;
 }
 
-button:disabled {
-  background-color: #444;
-  cursor: not-allowed;
+.btn-icon.spinning {
+  animation: spin 1s linear infinite;
 }
 
-.status-message {
-  padding: 1rem;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 400px;
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
-.success {
-  background-color: #1b5e20;
-  color: #e8f5e9;
-}
-
-th,
-td {
-  padding: 1rem;
-  text-align: left;
-  border-bottom: 1px solid #444;
-}
-
-th {
-  background-color: #333;
-  font-weight: bold;
-}
-
-tr:hover {
-  background-color: #383838;
-}
-
-.delete-btn {
-  background-color: #c62828;
-  padding: 0.5rem;
+/* Iconos en alertas */
+.alert-icon {
+  margin-right: 0.75rem;
   font-size: 1.2rem;
 }
 
-.delete-btn:hover {
-  background-color: #b71c1c;
+.status-alert.success .alert-icon {
+  color: #22c55e;
 }
 
-.list-header {
+.status-alert.error .alert-icon {
+  color: #ef4444;
+}
+
+/* Iconos en estado del header */
+.status-dot.active {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  background: rgba(34, 197, 94, 0.2);
+  border-radius: 50%;
+  color: #22c55e;
+}
+
+/* Mejoras para iconos en botones pequeños */
+.primary-btn.small .btn-icon {
+  margin-right: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.action-btn .btn-icon {
+  margin-right: 0.4rem;
+}
+
+/* Icono de estado vacío */
+.empty-icon {
+  color: #64748b;
+  opacity: 0.5;
   margin-bottom: 1rem;
 }
 
-.header-buttons {
+/* Mejora para iconos en la tabla */
+.icon-btn.delete {
   display: flex;
-  gap: 0.5rem;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
 }
 
-.sync-btn {
-  background-color: #2e7d32;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
+.icon-btn.delete:hover {
+  color: #ef4444;
 }
 
-.sync-btn:hover {
-  background-color: #1b5e20;
+/* Ajuste para iconos en stat-cards */
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(96, 165, 250, 0.15);
+  color: #60a5fa;
+  margin-right: 1rem;
 }
 
-.cleanup-btn {
-  background-color: #f57c00;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.9rem;
+/* Responsive para iconos */
+@media (max-width: 768px) {
+  .btn-icon {
+    margin-right: 0.3rem;
+  }
+  
+  .dashboard-title-icon {
+    font-size: 1.5rem;
+  }
+  
+  .section-title-icon {
+    font-size: 1.2rem;
+  }
 }
 
-.cleanup-btn:hover {
-  background-color: #e65100;
+/* =====================================================
+   TABLE
+===================================================== */
+.table-container {
+    overflow-x: auto;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 720px;
+}
+
+.modern-table thead {
+    background: var(--bg-soft);
+}
+
+.modern-table th {
+    text-align: left;
+    padding: 0.9rem 1.2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-soft);
+    border-bottom: 1px solid var(--border);
+}
+
+.modern-table td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid var(--bg-card);
+}
+
+.modern-table tbody tr:hover {
+    background: rgba(30, 41, 59, 0.6);
+}
+
+.source-badge {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(96, 165, 250, 0.15);
+    color: var(--primary);
+    font-size: 0.8rem;
+}
+
+/* =====================================================
+   EMPTY & STATUS
+===================================================== */
+.empty-state {
+    text-align: center;
+    padding: 3.5rem 2rem;
+    color: var(--text-soft);
+}
+
+.empty-icon {
+    font-size: 3rem;
+    opacity: 0.4;
+    margin-bottom: 1rem;
+}
+
+.status-alert {
+    margin-top: 1.5rem;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.status-alert.success {
+    background: rgba(34, 197, 94, 0.15);
+    color: var(--success);
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-alert.error {
+    background: rgba(239, 68, 68, 0.15);
+    color: var(--danger);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 768px) {
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .dashboard-title {
+        font-size: 2rem;
+    }
 }
