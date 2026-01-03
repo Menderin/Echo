@@ -3,11 +3,9 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 import os
 
-# Creamos la carpeta data si no existe (aunque Docker ya lo hace)
-os.makedirs("data", exist_ok=True)
-
-# URL de conexión a SQLite. El archivo se guardará en /app/data/radio.db
-SQLALCHEMY_DATABASE_URL = "sqlite:///./data/radio.db"
+# La carpeta db ya existe, no necesitamos crear nada
+# URL de conexión a SQLite. El archivo está en /app/app/db/radio.db
+SQLALCHEMY_DATABASE_URL = "sqlite:///./app/db/radio.db"
 
 # connect_args={"check_same_thread": False} es necesario solo para SQLite
 engine = create_engine(

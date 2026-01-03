@@ -1,10 +1,19 @@
+# Entornos virtuales y cache
 /venv
 /__pycache__
 __pycache__/
-*.db
+*.py[cod]
+
+# Base de datos
 *.sqlite3
-/raw
-raw/
+*.db
+Backend/app/db/radio.db
+
+# Dependencias Node
 node_modules/
+Frontend/node_modules/
+
+# Archivos de datos y logs
 data/
-/data
+logs/
+.DS_Store
