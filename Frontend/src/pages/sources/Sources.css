@@ -1,0 +1,417 @@
+/* =====================================================
+   SOURCES PAGE STYLES
+===================================================== */
+
+.page-container {
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.page-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #334155;
+}
+
+.page-title {
+    color: #e2e8f0;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    color: #94a3b8;
+    font-size: 1rem;
+}
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+.dashboard-section {
+    background: #1e293b;
+    border-radius: 18px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid #334155;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.section-header h2 {
+    font-size: 1.45rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.section-title-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.section-title-icon {
+    color: #60a5fa;
+    font-size: 1.5rem;
+}
+
+/* =====================================================
+   FORM STYLES
+===================================================== */
+.modern-form {
+    background: #020617;
+    padding: 1.5rem;
+    border-radius: 14px;
+    border: 1px solid #334155;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    background: #1e293b;
+    border: 1px solid #334155;
+    padding: 0.75rem 0.9rem;
+    border-radius: 8px;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #64748b;
+}
+
+.form-group-checkbox {
+    margin: 1rem 0;
+}
+
+.form-group-checkbox label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    color: #e2e8f0;
+}
+
+.form-group-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+.primary-btn {
+    background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+    border: none;
+    color: white;
+    padding: 0.9rem 1.6rem;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.primary-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(59, 130, 246, 0.35);
+}
+
+.primary-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.action-btn {
+    background: transparent;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover:not(:disabled) {
+    border-color: #60a5fa;
+    color: #e2e8f0;
+}
+
+.icon-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    background: transparent;
+    border: 1px solid #334155;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.icon-btn.edit:hover {
+    background: rgba(96, 165, 250, 0.15);
+    color: #60a5fa;
+    border-color: #60a5fa;
+}
+
+.icon-btn.delete:hover {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border-color: #ef4444;
+}
+
+.btn-icon {
+    margin-right: 0.5rem;
+    vertical-align: middle;
+}
+
+.btn-icon.spinning {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =====================================================
+   TABLE
+===================================================== */
+.table-container {
+    border-radius: 14px;
+    border: 1px solid #334155;
+    overflow: hidden;
+}
+
+.modern-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.modern-table thead {
+    background: #020617;
+}
+
+.modern-table th {
+    text-align: left;
+    padding: 0.9rem 1.2rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #94a3b8;
+    background: #020617;
+    border-bottom: 1px solid #334155;
+}
+
+.modern-table td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #1e293b;
+    color: #e2e8f0;
+}
+
+.modern-table tbody tr:hover {
+    background: rgba(30, 41, 59, 0.6);
+}
+
+.source-name {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.source-name svg {
+    font-size: 1.5rem;
+    color: #60a5fa;
+}
+
+.source-name strong {
+    display: block;
+    color: #e2e8f0;
+}
+
+.source-desc {
+    font-size: 0.85rem;
+    color: #94a3b8;
+    margin-top: 0.25rem;
+}
+
+.source-badge {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    background: rgba(96, 165, 250, 0.15);
+    color: #60a5fa;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.time-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+.status-badge {
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.status-badge.active {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+}
+
+.status-badge.inactive {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+}
+
+.text-muted {
+    color: #64748b;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* =====================================================
+   STATUS ALERTS
+===================================================== */
+.status-alert {
+    margin-top: 1.5rem;
+    padding: 1rem 1.2rem;
+    border-radius: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+}
+
+.status-alert.success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-alert.error {
+    background: rgba(239, 68, 68, 0.15);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.alert-icon {
+    margin-right: 0.75rem;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+/* =====================================================
+   EMPTY STATE
+===================================================== */
+.empty-state {
+    text-align: center;
+    padding: 3.5rem 2rem;
+    color: #94a3b8;
+}
+
+.empty-icon {
+    color: #64748b;
+    opacity: 0.5;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    color: #e2e8f0;
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: #94a3b8;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 768px) {
+    .page-container {
+        padding: 1rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .page-title {
+        font-size: 1.5rem;
+    }
+
+    .modern-table {
+        font-size: 0.875rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}

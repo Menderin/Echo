@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from sqlalchemy.sql import func
 from datetime import datetime
 import pytz
@@ -17,3 +17,19 @@ class Episode(Base):
     url = Column(String, unique=True, index=True) # link (Unique para evitar duplicados)
     file_path = Column(String) # Donde se guardó el archivo
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(CHILE_TZ))
+
+
+class Source(Base):
+    """Modelo para gestionar fuentes de contenido (radios, canales YouTube, etc.)"""
+    __tablename__ = "sources"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)  # "Radio Japón", "Noticias Telemundo"
+    source_type = Column(String)  # "youtube", "stream"
+    url = Column(String)  # URL principal o identificador
+    description = Column(String, nullable=True)  # Descripción opcional
+    schedule_time = Column(String, nullable=True)  # "07:00", "15:00" (para referencia)
+    duration_minutes = Column(Integer, nullable=True)  # Duración esperada en minutos
+    active = Column(Boolean, default=True)  # Si está activa o no
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(CHILE_TZ))
+    updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=lambda: datetime.now(CHILE_TZ))

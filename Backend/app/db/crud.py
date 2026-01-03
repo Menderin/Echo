@@ -39,3 +39,45 @@ def delete_episode(db: Session, episode_id: int):
         db.commit()
     return db_episode
 
+
+# ===== FUNCIONES CRUD PARA SOURCES =====
+
+def create_source(db: Session, source_data: dict):
+    """Crea una nueva fuente de contenido"""
+    db_source = models.Source(**source_data)
+    db.add(db_source)
+    db.commit()
+    db.refresh(db_source)
+    return db_source
+
+
+def get_sources(db: Session, skip: int = 0, limit: int = 100):
+    """Obtiene lista de fuentes ordenadas por fecha de creación"""
+    return db.query(models.Source).order_by(models.Source.created_at.desc()).offset(skip).limit(limit).all()
+
+
+def get_source(db: Session, source_id: int):
+    """Busca una fuente por su ID"""
+    return db.query(models.Source).filter(models.Source.id == source_id).first()
+
+
+def update_source(db: Session, source_id: int, source_data: dict):
+    """Actualiza una fuente existente"""
+    db_source = get_source(db, source_id)
+    if db_source:
+        for key, value in source_data.items():
+            if value is not None:  # Solo actualizar campos no-None
+                setattr(db_source, key, value)
+        db.commit()
+        db.refresh(db_source)
+    return db_source
+
+
+def delete_source(db: Session, source_id: int):
+    """Elimina una fuente de la base de datos"""
+    db_source = get_source(db, source_id)
+    if db_source:
+        db.delete(db_source)
+        db.commit()
+    return db_source
+

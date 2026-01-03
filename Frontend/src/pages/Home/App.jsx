@@ -4,16 +4,13 @@ import {
     MdBarChart,
     MdToday,
     MdPlayArrow,
-    MdDownload,
     MdRefresh,
     MdDelete,
-    MdCloudUpload,
     MdHistory
 } from 'react-icons/md'
 import {
     FiRefreshCw,
     FiTrash2,
-    FiAlertCircle,
     FiCheckCircle
 } from 'react-icons/fi'
 import {
@@ -25,12 +22,6 @@ import {
 import './App.css'
 
 function App() {
-    const [formData, setFormData] = useState({
-        id: '',
-        url: '',
-        source: 'youtube'
-    })
-    const [status, setStatus] = useState(null)
     const [loading, setLoading] = useState(false)
     const [episodes, setEpisodes] = useState([])
 
@@ -79,41 +70,7 @@ function App() {
         }
     }
 
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        })
-    }
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        setLoading(true)
-        setStatus(null)
-
-        try {
-            const response = await fetch('http://localhost:8000/scrape', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(formData),
-            })
-
-            const data = await response.json()
-
-            if (response.ok) {
-                setStatus({ type: 'success', message: `Descarga Completada: ${data.status}` })
-                fetchEpisodes()
-            } else {
-                setStatus({ type: 'error', message: `❌ Error: ${data.detail || 'Error desconocido'}` })
-            }
-        } catch (error) {
-            setStatus({ type: 'error', message: `❌ Error de conexión: ${error.message}` })
-        } finally {
-            setLoading(false)
-        }
-    }
 
     const handleDelete = async (id) => {
         if (!confirm("¿Estás seguro de eliminar este episodio?")) return
@@ -162,6 +119,35 @@ function App() {
         return sourceMap[source] || source || 'Desconocido';
     };
 
+    const handleDownloadAllSources = async () => {
+        if (!confirm("¿Descargar el último episodio de TODAS las fuentes activas?")) return;
+
+        setLoading(true);
+        try {
+            console.log("Iniciando descarga de todas las fuentes...");
+            const response = await fetch('http://localhost:8000/download-all-sources', {
+                method: 'POST'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                console.log("Resultado:", data);
+                alert(`✅ Proceso completado\n\nDescargados: ${data.downloaded}\nSaltados: ${data.skipped}\nErrores: ${data.errors.length}`);
+
+                // Recargar lista de episodios
+                fetchEpisodes();
+            } else {
+                const error = await response.json();
+                alert(`❌ Error: ${error.detail}`);
+            }
+        } catch (error) {
+            console.error("Error al descargar fuentes:", error);
+            alert('Error al descargar fuentes');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="dashboard">
 
@@ -182,10 +168,20 @@ function App() {
 
                 <button
                     className="primary-btn small"
-                    onClick={() => alert('Ejecución manual global (pendiente)')}
+                    onClick={handleDownloadAllSources}
+                    disabled={loading}
                 >
-                    <MdPlayArrow className="btn-icon" />
-                    Ejecutar tarea manual
+                    {loading ? (
+                        <>
+                            <FiRefreshCw className="btn-icon spinning" />
+                            Procesando...
+                        </>
+                    ) : (
+                        <>
+                            <MdPlayArrow className="btn-icon" />
+                            Descargar Todas las Fuentes
+                        </>
+                    )}
                 </button>
             </div>
             {/* ======================================================== */}
@@ -233,81 +229,7 @@ function App() {
                 </div>
             </div>
 
-            {/* SECCIÓN DE DESCARGA MANUAL */}
-            <div className="dashboard-section">
-                <div className="section-header">
-                    <div className="section-title-container">
-                        <MdDownload className="section-title-icon" />
-                        <h2>Ejecutar tarea manual</h2>
-                    </div>
-                    <p>Descarga manual de programas</p>
-                </div>
 
-                <form onSubmit={handleSubmit} className="modern-form">
-                    <div className="form-row">
-                        <div className="form-group">
-                            <label>ID del Programa</label>
-                            <input
-                                type="text"
-                                name="id"
-                                value={formData.id}
-                                onChange={handleChange}
-                                placeholder="Ej: noticias_matinal"
-                                required
-                            />
-                        </div>
-
-                        <div className="form-group">
-                            <label>Fuente</label>
-                            <select
-                                name="source"
-                                value={formData.source}
-                                onChange={handleChange}
-                            >
-                                <option value="youtube">YouTube</option>
-                                <option value="stream">Radio Stream</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div className="form-group">
-                        <label>URL</label>
-                        <input
-                            type="url"
-                            name="url"
-                            value={formData.url}
-                            onChange={handleChange}
-                            placeholder="https://www.youtube.com/watch?v=..."
-                            required
-                        />
-                    </div>
-
-                    <button type="submit" className="primary-btn" disabled={loading}>
-                        {loading ? (
-                            <>
-                                <FiRefreshCw className="btn-icon spinning" />
-                                Descargando...
-                            </>
-                        ) : (
-                            <>
-                                <MdCloudUpload className="btn-icon" />
-                                Iniciar Descarga
-                            </>
-                        )}
-                    </button>
-                </form>
-
-                {status && (
-                    <div className={`status-alert ${status.type}`}>
-                        {status.type === 'success' ? (
-                            <FiCheckCircle className="alert-icon" />
-                        ) : (
-                            <FiAlertCircle className="alert-icon" />
-                        )}
-                        {status.message}
-                    </div>
-                )}
-            </div>
 
             {/* TABLA DE EPISODIOS */}
             <div className="dashboard-section">
@@ -362,15 +284,10 @@ function App() {
                                         </td>
                                         <td>
                                             <div className="date-cell">
-                                                <span className="date">
-                                                    {new Date(ep.created_at).toLocaleDateString()}
-                                                </span>
-                                                <span className="time">
-                                                    {new Date(ep.created_at).toLocaleTimeString([], {
-                                                        hour: '2-digit',
-                                                        minute: '2-digit'
-                                                    })}
-                                                </span>
+                                                {new Date(ep.created_at).toLocaleDateString()} {new Date(ep.created_at).toLocaleTimeString([], {
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                })}
                                             </div>
                                         </td>
                                         <td>

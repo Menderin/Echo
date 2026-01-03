@@ -8,3 +8,4 @@ pytest
 ffmpeg-python
 sqlalchemy
 pytz
+beautifulsoup4

@@ -1,0 +1,212 @@
+/* =====================================================
+   DOWNLOADS PAGE
+===================================================== */
+.page-container {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  margin-bottom: 2.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid #334155;
+}
+
+.page-title {
+  color: #e2e8f0;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* =====================================================
+   SECTIONS
+===================================================== */
+.dashboard-section {
+  background: #1e293b;
+  border-radius: 18px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid #334155;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  gap: 1rem;
+}
+
+.section-header h2 {
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.section-header p {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.section-title-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.section-title-icon {
+  color: #60a5fa;
+  font-size: 1.5rem;
+}
+
+/* =====================================================
+   FORM
+===================================================== */
+.modern-form {
+  background: #020617;
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 1px solid #334155;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.form-group label {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  background: #1e293b;
+  border: 1px solid #334155;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  color: #e2e8f0;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.15);
+}
+
+.form-group input::placeholder {
+  color: #64748b;
+}
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+.primary-btn {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  border: none;
+  color: white;
+  padding: 0.9rem 1.6rem;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.primary-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px rgba(59, 130, 246, 0.35);
+}
+
+.primary-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-icon {
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.btn-icon.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =====================================================
+   STATUS ALERTS
+===================================================== */
+.status-alert {
+  margin-top: 1.5rem;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+}
+
+.status-alert.success {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.status-alert.error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.alert-icon {
+  margin-right: 0.75rem;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+@media (max-width: 768px) {
+  .page-container {
+    padding: 1rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+}

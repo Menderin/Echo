@@ -59,12 +59,18 @@ def scrape(program: Dict) -> Dict:
             output_path = output_path[5:]  # Remover "/app/"
 
         # 3. Ejecutar descarga
-        scraper.download(url, output_path)
+        scraper_result = scraper.download(url, output_path)
+        
+        # Obtener título del episodio si el scraper lo retorna
+        episode_title = None
+        if scraper_result and isinstance(scraper_result, dict):
+            episode_title = scraper_result.get("title")
 
         return {
             "program_id": program_id,
             "source": source,
             "file_path": output_path,
+            "title": episode_title,  # Titulo real del episodio
             "status": "downloaded"
         }
 
