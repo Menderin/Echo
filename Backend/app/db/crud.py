@@ -39,3 +39,39 @@ def delete_episode(db: Session, episode_id: int):
         db.commit()
     return db_episode
 
+
+def create_log(db: Session, level: str, message: str, details: str = None, source: str = None):
+    """Guarda un evento de log en la base de datos"""
+    db_log = models.Log(
+        level=level,
+        message=message,
+        details=details,
+        source=source
+    )
+    db.add(db_log)
+    db.commit()
+    db.refresh(db_log)
+    return db_log
+
+
+def get_logs(db: Session, skip: int = 0, limit: int = 50, level: str = None, start_date=None, end_date=None, q: str = None):
+    """Obtiene logs con filtros simples: nivel, rango de fecha y búsqueda en mensaje/detalles"""
+    query = db.query(models.Log)
+
+    if level:
+        query = query.filter(models.Log.level == level)
+
+    if start_date:
+        query = query.filter(models.Log.timestamp >= start_date)
+
+    if end_date:
+        query = query.filter(models.Log.timestamp <= end_date)
+
+    if q:
+        like_q = f"%{q}%"
+        query = query.filter((models.Log.message.ilike(like_q)) | (models.Log.details.ilike(like_q)))
+
+    total = query.count()
+    items = query.order_by(models.Log.timestamp.desc()).offset(skip).limit(limit).all()
+    return {"items": items, "total": total, "skip": skip, "limit": limit}
+

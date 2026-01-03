@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.sql import func
 from datetime import datetime
 import pytz
@@ -17,3 +17,14 @@ class Episode(Base):
     url = Column(String, unique=True, index=True) # link (Unique para evitar duplicados)
     file_path = Column(String) # Donde se guardó el archivo
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(CHILE_TZ))
+
+
+class Log(Base):
+    __tablename__ = "logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    level = Column(String, index=True)  # INFO, WARN, ERROR
+    message = Column(String, index=True)
+    details = Column(Text, nullable=True)
+    source = Column(String, index=True, nullable=True)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(CHILE_TZ))
