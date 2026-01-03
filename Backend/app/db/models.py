@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Boolean
+from sqlalchemy import Column, Integer, String, DateTime, Boolean, Text
 from sqlalchemy.sql import func
 from datetime import datetime
 import pytz
@@ -33,3 +33,14 @@ class Source(Base):
     active = Column(Boolean, default=True)  # Si está activa o no
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(CHILE_TZ))
     updated_at = Column(DateTime(timezone=True), nullable=True, onupdate=lambda: datetime.now(CHILE_TZ))
+
+
+class Log(Base):
+    __tablename__ = "logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    level = Column(String, index=True)  # INFO, WARN, ERROR
+    message = Column(String, index=True)
+    details = Column(Text, nullable=True)
+    source = Column(String, index=True, nullable=True)
+    timestamp = Column(DateTime(timezone=True), default=lambda: datetime.now(CHILE_TZ))
