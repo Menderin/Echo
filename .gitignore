@@ -7,3 +7,4 @@ __pycache__/
 raw/
 node_modules/
 data/
+/data

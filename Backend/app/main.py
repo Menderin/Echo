@@ -6,6 +6,7 @@ from typing import List
 from app.api.models import Program, SourceCreate, SourceUpdate, SourceResponse
 from app.services.scraper import scrape, ScraperError
 from app.db import models, crud, database
+from app.api import logs as logs_api
 
 # Crear las tablas en la base de datos al iniciar
 models.Base.metadata.create_all(bind=database.engine)
@@ -15,6 +16,9 @@ app = FastAPI(
     description="API para gestionar descargas y transmisiones de radio",
     version="1.0.0"
 )
+
+# Registrar router de logs
+app.include_router(logs_api.router)
 
 # Configurar CORS para permitir que el Frontend hable con el Backend
 app.add_middleware(
@@ -42,6 +46,10 @@ async def run_scraper(program: Program, db: Session = Depends(database.get_db)):
         # 1.1 Verificar si el archivo realmente existe en disco
         if existing_episode.file_path and os.path.exists(existing_episode.file_path):
             print(f"⚠️ Episodio ya existe y archivo encontrado: {existing_episode.title}")
+            try:
+                crud.create_log(db=db, level="INFO", message=f"Episodio ya existe: {existing_episode.title}", details=None, source="scrape")
+            except Exception:
+                pass
             return {
                 "status": "skipped",
                 "message": "El episodio ya fue descargado anteriormente",
@@ -71,6 +79,10 @@ async def run_scraper(program: Program, db: Session = Depends(database.get_db)):
                 db.commit()
                 db.refresh(existing_episode)
                 print(f"🔄 Registro actualizado en DB: ID {existing_episode.id}")
+                try:
+                    crud.create_log(db=db, level="INFO", message=f"Episodio re-descargado y actualizado: {existing_episode.title}", details=None, source="scrape")
+                except Exception:
+                    pass
             else:
                 # Si es nuevo, creamos uno nuevo
                 new_episode = crud.create_episode(
@@ -81,6 +93,10 @@ async def run_scraper(program: Program, db: Session = Depends(database.get_db)):
                     file_path=result["file_path"]
                 )
                 print(f"💾 Guardado en DB: ID {new_episode.id}")
+                try:
+                    crud.create_log(db=db, level="INFO", message=f"Episodio descargado: {new_episode.title}", details=None, source="scrape")
+                except Exception:
+                    pass
 
         return {
             "status": "success",
@@ -88,9 +104,17 @@ async def run_scraper(program: Program, db: Session = Depends(database.get_db)):
         }
         
     except ScraperError as e:
+        try:
+            crud.create_log(db=db, level="ERROR", message=str(e), details=None, source="scrape")
+        except Exception:
+            pass
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         print(f"Error crítico: {e}")
+        try:
+            crud.create_log(db=db, level="ERROR", message=str(e), details=None, source="scrape")
+        except Exception:
+            pass
         raise HTTPException(status_code=500, detail=f"Error interno del servidor: {str(e)}")
 
 @app.get("/episodes")
@@ -117,6 +141,10 @@ async def delete_episode(episode_id: int, db: Session = Depends(database.get_db)
     
     # 2. Eliminar de la BD
     crud.delete_episode(db, episode_id)
+    try:
+        crud.create_log(db=db, level="INFO", message=f"Episodio eliminado: {episode.title}", details=None, source="delete")
+    except Exception:
+        pass
     
     return {"status": "success", "message": f"Episodio {episode_id} eliminado"}
 
@@ -177,6 +205,10 @@ async def sync_files(db: Session = Depends(database.get_db)):
                     except Exception as e:
                         print(f"❌ Error importando {file}: {e}")
                         errors.append(f"{file}: {str(e)}")
+                        try:
+                            crud.create_log(db=db, level="ERROR", message=f"Error importando {file}", details=str(e), source="sync")
+                        except Exception:
+                            pass
 
     return {
         "status": "success", 
@@ -217,6 +249,10 @@ async def cleanup_orphaned_records(db: Session = Depends(database.get_db)):
             except Exception as e:
                 print(f"❌ Error eliminando registro {episode.id}: {e}")
                 errors.append(f"{episode.title}: {str(e)}")
+                try:
+                    crud.create_log(db=db, level="ERROR", message=f"Error eliminando registro {episode.id}", details=str(e), source="cleanup")
+                except Exception:
+                    pass
     
     # 2. Eliminar duplicados (mismo file_path)
     # Recargar episodios después de normalización
@@ -232,6 +268,10 @@ async def cleanup_orphaned_records(db: Session = Depends(database.get_db)):
             except Exception as e:
                 print(f"❌ Error eliminando duplicado {episode.id}: {e}")
                 errors.append(f"{episode.title}: {str(e)}")
+                try:
+                    crud.create_log(db=db, level="ERROR", message=f"Error eliminando registro {episode.id}", details=str(e), source="cleanup")
+                except Exception:
+                    pass
         else:
             seen_paths[episode.file_path] = episode.id
 

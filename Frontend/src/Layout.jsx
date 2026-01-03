@@ -4,7 +4,7 @@ import Sidebar from "./components/Sidebar";
 import App from "./pages/Home/App";
 import Downloads from "./pages/downloads/Downloads";
 import Sources from "./pages/sources/Sources";
-import Logs from "./pages/Logs";
+import Logs from "./pages/logs/Logs";
 import './pages/Home/App.css';
 
 function Layout() {
