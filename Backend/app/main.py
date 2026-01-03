@@ -2,7 +2,8 @@ import os
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
-from app.api.models import Program
+from typing import List
+from app.api.models import Program, SourceCreate, SourceUpdate, SourceResponse
 from app.services.scraper import scrape, ScraperError
 from app.db import models, crud, database
 
@@ -242,3 +243,146 @@ async def cleanup_orphaned_records(db: Session = Depends(database.get_db)):
         "duplicates_removed": duplicates_removed,
         "errors": errors
     }
+
+# ===== DESCARGA AUTOMATICA DE TODAS LAS FUENTES =====
+
+@app.post("/download-all-sources")
+async def download_all_sources(db: Session = Depends(database.get_db)):
+    """
+    Descarga el ultimo episodio de todas las fuentes activas.
+    Util para automatizacion programada (cron jobs).
+    """
+    # Obtener todas las fuentes activas
+    sources = crud.get_sources(db, skip=0, limit=1000)
+    active_sources = [s for s in sources if s.active]
+    
+    if not active_sources:
+        return {
+            "status": "success",
+            "message": "No hay fuentes activas para descargar",
+            "downloaded": 0,
+            "skipped": 0,
+            "errors": []
+        }
+    
+    results = {
+        "downloaded": 0,
+        "skipped": 0,
+        "errors": []
+    }
+    
+    print(f"\n{'='*60}")
+    print(f"INICIANDO DESCARGA AUTOMATICA DE {len(active_sources)} FUENTES")
+    print(f"{'='*60}\n")
+    
+    for source in active_sources:
+        try:
+            print(f"\nProcesando: {source.name}")
+            print(f"   Tipo: {source.source_type}")
+            print(f"   URL: {source.url}")
+            
+            # Verificar si ya existe en BD
+            existing = crud.get_episode_by_url(db, url=source.url)
+            
+            if existing and existing.file_path and os.path.exists(existing.file_path):
+                print(f"   Ya existe, saltando...")
+                results["skipped"] += 1
+                continue
+            
+            # Preparar datos para scrape
+            program_data = {
+                "id": source.name.lower().replace(" ", "_"),
+                "source": source.source_type,
+                "url": source.url
+            }
+            
+            # Ejecutar descarga
+            result = scrape(program_data)
+            
+            if result["status"] == "downloaded":
+                # Guardar en BD usando el titulo real del episodio
+                episode_title = result.get("title") or source.name  # Fallback a source.name si no hay titulo
+                new_episode = crud.create_episode(
+                    db=db,
+                    title=episode_title,
+                    url=source.url,
+                    source=source.source_type,
+                    file_path=result["file_path"]
+                )
+                print(f"   Descargado exitosamente: {result['file_path']}")
+                results["downloaded"] += 1
+            else:
+                print(f"   Saltado (no se descargo)")
+                results["skipped"] += 1
+                
+        except Exception as e:
+            error_msg = f"{source.name}: {str(e)}"
+            print(f"   Error: {error_msg}")
+            results["errors"].append(error_msg)
+    
+    print(f"\n{'='*60}")
+    print(f"RESUMEN:")
+    print(f"   Descargados: {results['downloaded']}")
+    print(f"   Saltados: {results['skipped']}")
+    print(f"   Errores: {len(results['errors'])}")
+    print(f"{'='*60}\n")
+    
+    return {
+        "status": "success",
+        "message": f"Proceso completado. {results['downloaded']} fuentes descargadas, {results['skipped']} saltadas, {len(results['errors'])} errores.",
+        "downloaded": results["downloaded"],
+        "skipped": results["skipped"],
+        "errors": results["errors"]
+    }
+
+
+# ===== ENDPOINTS PARA GESTION DE FUENTES =====
+
+@app.post("/sources", response_model=SourceResponse, status_code=201)
+async def create_source(source: SourceCreate, db: Session = Depends(database.get_db)):
+    """Crea una nueva fuente de contenido"""
+    try:
+        source_data = source.model_dump()
+        new_source = crud.create_source(db, source_data)
+        return new_source
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error creando fuente: {str(e)}")
+
+
+@app.get("/sources", response_model=List[SourceResponse])
+async def read_sources(skip: int = 0, limit: int = 100, db: Session = Depends(database.get_db)):
+    """Obtiene la lista de fuentes de contenido"""
+    sources = crud.get_sources(db, skip=skip, limit=limit)
+    return sources
+
+
+@app.get("/sources/{source_id}", response_model=SourceResponse)
+async def read_source(source_id: int, db: Session = Depends(database.get_db)):
+    """Obtiene una fuente especifica por ID"""
+    source = crud.get_source(db, source_id)
+    if not source:
+        raise HTTPException(status_code=404, detail="Fuente no encontrada")
+    return source
+
+
+@app.put("/sources/{source_id}", response_model=SourceResponse)
+async def update_source(source_id: int, source: SourceUpdate, db: Session = Depends(database.get_db)):
+    """Actualiza una fuente existente"""
+    source_data = source.model_dump(exclude_unset=True)
+    updated_source = crud.update_source(db, source_id, source_data)
+    
+    if not updated_source:
+        raise HTTPException(status_code=404, detail="Fuente no encontrada")
+    
+    return updated_source
+
+
+@app.delete("/sources/{source_id}")
+async def delete_source(source_id: int, db: Session = Depends(database.get_db)):
+    """Elimina una fuente de contenido"""
+    deleted_source = crud.delete_source(db, source_id)
+    
+    if not deleted_source:
+        raise HTTPException(status_code=404, detail="Fuente no encontrada")
+    
+    return {"status": "success", "message": f"Fuente {source_id} eliminada exitosamente"}

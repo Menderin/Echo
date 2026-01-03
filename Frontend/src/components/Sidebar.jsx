@@ -3,54 +3,60 @@ import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
 
 // Importar iconos profesionales de react-icons
-import { 
-  MdDashboard, 
-  MdDownload, 
-  MdEdit, 
-  MdHistory, 
+import {
+  MdDashboard,
+  MdDownload,
+  MdEdit,
+  MdHistory,
   MdSettings,
   MdRadio,
   MdCheckCircle,
   MdRefresh
 } from 'react-icons/md';
-import { 
+import {
   RiSignalTowerFill,
-  RiCloudLine 
+  RiCloudLine
 } from 'react-icons/ri';
-import { 
-  FiActivity 
+import {
+  FiActivity
 } from 'react-icons/fi';
 
 const Sidebar = () => {
   const menuItems = [
-    { 
-      path: '/', 
-      icon: <MdDashboard size={20} />, 
+    {
+      path: '/',
+      icon: <MdDashboard size={20} />,
       label: 'Dashboard',
       description: 'Vista general del sistema'
     },
-    { 
-      path: '/downloads', 
-      icon: <MdDownload size={20} />, 
+    {
+      path: '/downloads',
+      icon: <MdDownload size={20} />,
       label: 'Descargas',
       description: 'Gestión de descargas'
     },
-    { 
-      path: '/editions', 
-      icon: <MdEdit size={20} />, 
+    {
+      path: '/sources',
+      icon: <RiSignalTowerFill size={20} />,
+      label: 'Fuentes',
+      description: 'Gestión de fuentes'
+    },
+    {
+      path: '/editions',
+      icon: <MdEdit size={20} />,
       label: 'Ediciones',
       description: 'Edición de audio',
       badge: 'Próximo'
     },
-    { 
-      path: '/logs', 
-      icon: <MdHistory size={20} />, 
+    {
+      path: '/logs',
+      icon: <MdHistory size={20} />,
       label: 'Logs / Historial',
       description: 'Registro de actividades'
     },
-    { 
-      path: '/settings', 
-      icon: <MdSettings size={20} />, 
+    {
+      path: '/settings',
+      icon: <MdSettings size={20} />,
       label: 'Configuración',
       description: 'Ajustes del sistema'
     },
@@ -84,9 +90,9 @@ const Sidebar = () => {
           <ul className="nav-list">
             {menuItems.map((item) => (
               <li key={item.path} className="nav-item">
-                <NavLink 
-                  to={item.path} 
-                  className={({ isActive }) => 
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
                     `nav-link ${isActive ? 'active' : ''}`
                   }
                 >
