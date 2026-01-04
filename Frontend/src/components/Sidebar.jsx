@@ -26,26 +26,26 @@ const Sidebar = () => {
     {
       path: '/',
       icon: <MdDashboard size={20} />,
-      label: 'Dashboard',
-      description: 'Vista general del sistema'
+      label: 'Home',
+      description: 'Vista general'
     },
     {
       path: '/downloads',
       icon: <MdDownload size={20} />,
       label: 'Descargas',
-      description: 'Gestión de descargas'
+      description: 'Descarga episodios'
     },
     {
       path: '/sources',
       icon: <RiSignalTowerFill size={20} />,
       label: 'Fuentes',
-      description: 'Gestión de fuentes'
+      description: 'Visualiza tus fuentes de descarga'
     },
     {
       path: '/editions',
       icon: <MdEdit size={20} />,
       label: 'Ediciones',
-      description: 'Edición de audio',
+      description: 'Edita tus audios',
       badge: 'Próximo'
     },
     {

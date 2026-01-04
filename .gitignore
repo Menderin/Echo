@@ -17,3 +17,7 @@ Frontend/node_modules/
 data/
 logs/
 .DS_Store
+
+# Carpetas innecesarias en Backend
+Backend/data/
+Backend/test/

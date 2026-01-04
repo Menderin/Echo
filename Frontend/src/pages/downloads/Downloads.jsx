@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import {
   MdDownload,
-  MdCloudUpload
+  MdCloudUpload,
+  MdPlayArrow
 } from 'react-icons/md';
 import {
   FiRefreshCw,
   FiAlertCircle,
-  FiCheckCircle
+  FiCheckCircle,
+  FiInfo
 } from 'react-icons/fi';
 import './Downloads.css';
 
@@ -18,6 +20,7 @@ function Downloads() {
   });
   const [status, setStatus] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [bulkLoading, setBulkLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -53,6 +56,36 @@ function Downloads() {
       setStatus({ type: 'error', message: `❌ Error de conexión: ${error.message}` });
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDownloadAllSources = async () => {
+    if (!confirm("¿Descargar el último episodio de TODAS las fuentes activas?")) return;
+
+    setBulkLoading(true);
+    setStatus(null);
+    try {
+      console.log("Iniciando descarga de todas las fuentes...");
+      const response = await fetch('http://localhost:8000/download-all-sources', {
+        method: 'POST'
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Resultado:", data);
+        setStatus({
+          type: 'success',
+          message: `✅ Proceso completado: ${data.downloaded} descargados, ${data.skipped} saltados, ${data.errors.length} errores`
+        });
+      } else {
+        const error = await response.json();
+        setStatus({ type: 'error', message: `❌ Error: ${error.detail}` });
+      }
+    } catch (error) {
+      console.error("Error al descargar fuentes:", error);
+      setStatus({ type: 'error', message: '❌ Error al descargar fuentes' });
+    } finally {
+      setBulkLoading(false);
     }
   };
 
@@ -141,6 +174,51 @@ function Downloads() {
             {status.message}
           </div>
         )}
+      </div>
+
+      {/* SECCIÓN DE DESCARGA AUTOMÁTICA */}
+      <div className="dashboard-section">
+        <div className="section-header">
+          <div className="section-title-container">
+            <MdPlayArrow className="section-title-icon" />
+            <h2>Descarga Automática</h2>
+          </div>
+          <p>Descarga masiva de todas las fuentes configuradas</p>
+        </div>
+
+        {/* Info Box */}
+        <div className="info-box">
+          <div className="info-icon-wrapper">
+            <FiInfo className="info-icon" />
+          </div>
+          <div className="info-content">
+            <p>Descarga automáticamente el último episodio de <strong>todas las fuentes activas</strong> configuradas en el sistema.</p>
+            <ul>
+              <li><FiCheckCircle size={14} /> Verifica si el episodio ya existe antes de descargar</li>
+              <li><FiCheckCircle size={14} /> Salta descargas duplicadas automáticamente</li>
+              <li><FiCheckCircle size={14} /> Reporta errores individuales sin detener el proceso</li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Botón de Descarga Masiva */}
+        <button
+          className="primary-btn large"
+          onClick={handleDownloadAllSources}
+          disabled={bulkLoading}
+        >
+          {bulkLoading ? (
+            <>
+              <FiRefreshCw className="btn-icon spinning" />
+              Procesando...
+            </>
+          ) : (
+            <>
+              <MdPlayArrow className="btn-icon" />
+              Descargar Todas las Fuentes
+            </>
+          )}
+        </button>
       </div>
     </div>
   );

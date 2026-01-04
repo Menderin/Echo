@@ -119,34 +119,7 @@ function App() {
         return sourceMap[source] || source || 'Desconocido';
     };
 
-    const handleDownloadAllSources = async () => {
-        if (!confirm("¿Descargar el último episodio de TODAS las fuentes activas?")) return;
 
-        setLoading(true);
-        try {
-            console.log("Iniciando descarga de todas las fuentes...");
-            const response = await fetch('http://localhost:8000/download-all-sources', {
-                method: 'POST'
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Resultado:", data);
-                alert(`✅ Proceso completado\n\nDescargados: ${data.downloaded}\nSaltados: ${data.skipped}\nErrores: ${data.errors.length}`);
-
-                // Recargar lista de episodios
-                fetchEpisodes();
-            } else {
-                const error = await response.json();
-                alert(`❌ Error: ${error.detail}`);
-            }
-        } catch (error) {
-            console.error("Error al descargar fuentes:", error);
-            alert('Error al descargar fuentes');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <div className="dashboard">
@@ -165,24 +138,6 @@ function App() {
                         Sistema activo · America/Santiago
                     </span>
                 </div>
-
-                <button
-                    className="primary-btn small"
-                    onClick={handleDownloadAllSources}
-                    disabled={loading}
-                >
-                    {loading ? (
-                        <>
-                            <FiRefreshCw className="btn-icon spinning" />
-                            Procesando...
-                        </>
-                    ) : (
-                        <>
-                            <MdPlayArrow className="btn-icon" />
-                            Descargar Todas las Fuentes
-                        </>
-                    )}
-                </button>
             </div>
             {/* ======================================================== */}
 

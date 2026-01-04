@@ -7,9 +7,9 @@ services:
       dockerfile: DockerFile
     container_name: echo_backend
     volumes:
-      # Mapeamos el código local al contenedor para desarrollo en vivo
-      - ./Backend:/app
-      # Mapeamos la carpeta de datos para que las descargas persistan en tu PC
+      # Mapeamos solo el código de la app (no todo Backend)
+      - ./Backend/app:/app/app
+      # Mapeamos la carpeta de datos para que las descargas persistan
       - ./data:/app/data
     # Ejecutamos uvicorn como servidor web
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
